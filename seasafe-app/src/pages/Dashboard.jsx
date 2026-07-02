@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Header from "../components/layout/Header";
-import SeaMap from "../components/dashboard/SeaMap";
+import SeaMap from "../components/Dashboard/SeaMap";
 import Card from "../components/common/Card";
-import StatusModal from "../components/dashboard/StatusModel";
+import StatusModal from "../components/Dashboard/StatusModel";
 import { getMarineWeather } from "../services/marine";
 import { geoShapes } from "../services/geoShapes";
 import { getLocationName } from "../services/reverseGeocode";
