@@ -6,6 +6,31 @@ import StatusModal from "../components/Dashboard/StatusModel";
 import { getMarineWeather } from "../services/marine";
 import { geoShapes } from "../services/geoShapes";
 import { getLocationName } from "../services/reverseGeocode";
+import "../styles/Dashboard.css";
+
+import {
+startLocationTracking
+}
+from "../utils/location";
+
+
+import {
+searchMarine
+}
+from "../services/geoSearch";
+
+
+import {
+rivers
+}
+from "../data/rivers";
+
+
+import {
+findNearestRiver
+}
+from "../services/nearestFeature";
+
 
 export default function Dashboard() {
   const [query, setQuery] = useState("");
@@ -21,19 +46,34 @@ export default function Dashboard() {
 
   const [suggestions, setSuggestions] = useState([]);
 
+  const [userLocation,setUserLocation]=useState(null);
+
+const [distance,setDistance]=useState(null);
+
+// const [shape,setShape]=useState(null);
+
   // 🌍 Auto location on load
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        await handleLocation(pos.coords.latitude, pos.coords.longitude);
-        setLocationName("Current Location");
-      },
-      async () => {
-        await handleLocation(15, 88);
-        setLocationName("Bay of Bengal");
-      }
-    );
-  }, []);
+useEffect(()=>{
+
+
+startLocationTracking(
+(location)=>{
+
+
+setUserLocation(location);
+
+
+handleLocation(
+location.lat,
+location.lon
+);
+
+
+}
+);
+
+
+},[]);
 
   // 🌊 Marine engine
 const handleLocation = async (lat, lon) => {
@@ -78,55 +118,185 @@ const handleLocation = async (lat, lon) => {
 
   // 🔍 SEARCH FUNCTION
   const handleSearch = async () => {
-    if (!query.trim()) return;
+
+  if (!query.trim()) return;
+
+
+  const searchText = query.toLowerCase();
+
+
+
+  // ===============================
+  // SPECIAL MARINE FEATURES FIRST
+  // ===============================
+
+  if (
+    searchText.includes("godavari") ||
+    searchText.includes("godavari river")
+  ) {
+
+
+    if(!userLocation){
+      alert("Waiting for GPS location...");
+      return;
+    }
+
+
+    const river = rivers.godavari;
+
+
+    const nearest = findNearestRiver(
+      userLocation.lat,
+      userLocation.lon,
+      river
+    );
+
+
+
+    // move marker directly
+    setPosition([
+      nearest.lat,
+      nearest.lon
+    ]);
+
+
+
+    // distance
+    setDistance(
+      nearest.distance.toFixed(2)
+    );
+
+
+
+    // highlight river
+    setShape(
+      river.polygon
+    );
+
+
+
+    // fly directly
+    if(mapRef){
+
+      mapRef.flyTo(
+        [
+          nearest.lat,
+          nearest.lon
+        ],
+        17,
+        {
+          duration:2
+        }
+      );
+
+    }
+
+
+
+    // update marine data
+    await handleLocation(
+      nearest.lat,
+      nearest.lon
+    );
+
+
+
+    setLocationName(
+      "Godavari River"
+    );
+
+
+    return;   // IMPORTANT
+  }
+
+
+
+
+
+  // ===============================
+  // NORMAL SEARCH
+  // ===============================
+
+
+  const results =
+  await searchMarine(
+    query,
+    userLocation
+  );
+
+
+  if(!results.length)
+  return;
+
+
+
+  const best =
+  results[0];
+
+
+  await handleLocation(
+    best.lat,
+    best.lon
+  );
+
+
+  if(mapRef){
+
+    mapRef.flyTo(
+      [
+        best.lat,
+        best.lon
+      ],
+      17,
+      {
+        duration:2
+      }
+    );
+
+  }
+
+
+};
+
+  // 🌍 LIVE AUTOCOMPLETE
+// 🌍 LIVE AUTOCOMPLETE
+useEffect(() => {
+
+  if (query.length < 3) {
+    setSuggestions([]);
+    return;
+  }
+
+
+  const delay = setTimeout(async () => {
 
     try {
+
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=6`
       );
 
+
       const data = await res.json();
 
-      if (!data.length) return alert("No location found");
 
-      const best = data[0];
+      setSuggestions(data);
 
-      setLocationName(best.display_name);
 
-      await handleLocation(best.lat, best.lon);
+    } catch(err) {
 
-      if (mapRef) {
-        mapRef.flyTo([best.lat, best.lon], 7, {
-          duration: 2.5,
-        });
-      }
-    } catch (err) {
       console.error(err);
-    }
-  };
 
-  // 🌍 LIVE AUTOCOMPLETE
-  useEffect(() => {
-    if (query.length < 3) {
-      setSuggestions([]);
-      return;
     }
 
-    const delay = setTimeout(async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=6`
-        );
 
-        const data = await res.json();
-        setSuggestions(data);
-      } catch (err) {
-        console.error(err);
-      }
-    }, 350);
+  },350);
 
-    return () => clearTimeout(delay);
-  }, [query]);
+
+  return () => clearTimeout(delay);
+
+
+},[query]);
 
   // 🌊 SHAPE LOGIC (FIXED - IMPORTANT)
   useEffect(() => {
@@ -144,7 +314,7 @@ const handleLocation = async (lat, lon) => {
   }, [query]);
 
   return (
-    <div className="dashboard">
+    <div className="dash-dashboard">
       <Header />
 
       {/* 🔍 SEARCH */}
@@ -155,21 +325,142 @@ const handleLocation = async (lat, lon) => {
           placeholder="Search ocean, river, sea..."
         />
 
-        <button onClick={handleSearch}>Search</button>
+        <button className="dash-button" onClick={handleSearch}>Search</button>
 
         {/* 🌍 Suggestions */}
         {suggestions.length > 0 && (
-          <div className="suggest-box show">
+          <div className="dash-suggest-box show">
             {suggestions.map((item, i) => (
               <div
                 key={i}
-                className="suggest-item"
-                onClick={() => {
-                  setQuery(item.display_name);
-                  setSuggestions([]);
-                  setShape(null);
-                  handleLocation(item.lat, item.lon);
-                }}
+                className="dash-suggest-item"
+               onClick={async () => {
+
+  setQuery(item.display_name);
+  setSuggestions([]);
+
+
+  const selectedName = item.display_name.toLowerCase();
+
+
+
+  // ==============================
+  // GODAVARI SPECIAL HANDLING
+  // ==============================
+
+  if (selectedName.includes("godavari")) {
+
+
+    if (!userLocation) {
+      alert("Waiting for GPS location...");
+      return;
+    }
+
+
+    const river = rivers.godavari;
+
+
+
+    // Find nearest point of Godavari
+    const nearest = findNearestRiver(
+      userLocation.lat,
+      userLocation.lon,
+      river
+    );
+
+
+
+    // Move ship marker
+    setPosition([
+      nearest.lat,
+      nearest.lon
+    ]);
+
+
+
+    // Calculate distance
+    setDistance(
+      nearest.distance.toFixed(2)
+    );
+
+
+
+    // Highlight full river
+    setShape(
+      river.polygon
+    );
+
+
+
+    // Update marine data
+    await handleLocation(
+      nearest.lat,
+      nearest.lon
+    );
+
+
+
+    // Set correct name
+    setLocationName(
+      "Godavari River"
+    );
+
+
+
+    // Fly map to nearest river point
+    if (mapRef) {
+
+      mapRef.flyTo(
+        [
+          nearest.lat,
+          nearest.lon
+        ],
+        17,
+        {
+          duration: 2
+        }
+      );
+
+    }
+
+
+    return;
+
+  }
+
+
+
+  // ==============================
+  // NORMAL LOCATION SEARCH
+  // ==============================
+
+
+  setShape(null);
+
+
+  await handleLocation(
+    item.lat,
+    item.lon
+  );
+
+
+  if (mapRef) {
+
+    mapRef.flyTo(
+      [
+        item.lat,
+        item.lon
+      ],
+      17,
+      {
+        duration: 2
+      }
+    );
+
+  }
+
+
+}}
               >
                 📍 {item.display_name}
               </div>
@@ -192,11 +483,39 @@ const handleLocation = async (lat, lon) => {
 
       {/* 🌊 STATUS */}
       {marineData && (
-        <Card title="🌊 Live Marine Status">
-          <p><b>Location:</b> {locationName}</p>
-          <p><b>Status:</b> {marineData.risk}</p>
-          <p><b>Wave:</b> {marineData.wave.toFixed(2)} m</p>
-        </Card>
+     <Card title="🌊 Live Marine Status">
+  <div className="dash-marine-status">
+
+    <div className="dash-status-item">
+      <span className="dash-label">📍 Location</span>
+      <span className="dash-value">{locationName}</span>
+    </div>
+
+    <div className="dash-status-item">
+      <span className="dash-label">⚠ Status</span>
+
+      <span
+        className={`dash-status-badge ${
+          marineData.riskLevel === "safe"
+            ? "dash-safe"
+            : marineData.riskLevel === "caution"
+            ? "dash-caution"
+            : "dash-danger"
+        }`}
+      >
+        {marineData.risk}
+      </span>
+    </div>
+
+    <div className="dash-status-item">
+      <span className="dash-label">🌊 Wave Height</span>
+      <span className="dash-wave">
+        {marineData.wave.toFixed(2)} m
+      </span>
+    </div>
+
+  </div>
+</Card>
       )}
 
       {/* 🧠 MODAL */}

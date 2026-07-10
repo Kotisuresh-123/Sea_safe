@@ -1,11 +1,8 @@
-import Dashboard from "./pages/Dashboard";
-import "./styles/global.css";
+import Home from "./pages/Home";
 
 function App() {
   return (
-    <div className="app">
-      <Dashboard />
-    </div>
+    <Home />
   );
 }
 

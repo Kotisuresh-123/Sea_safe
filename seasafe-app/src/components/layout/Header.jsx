@@ -14,11 +14,11 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="header">
-      <div>
+    <header className="dash-header" >
+      {/* <div>
         <h1>🌊 SeaSafe</h1>
         <p>Marine Safety & Fisherman Assistance Platform</p>
-      </div>
+      </div> */}
 
       <div>
         <strong>{time}</strong>

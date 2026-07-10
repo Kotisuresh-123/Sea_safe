@@ -1,0 +1,354 @@
+/* ===========================
+   DASHBOARD
+=========================== */
+
+.dash-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background:linear-gradient(to right,rgb(22, 26, 69),rgba(25, 109, 226, 0.86));
+  color: white;
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.dash-header {
+  background: rgba(255,255,255,.06);
+  backdrop-filter: blur(10px);
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ===========================
+   GRID
+=========================== */
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 20px;
+}
+
+/* ===========================
+   CARD
+=========================== */
+
+.dash-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 15px;
+  transition: .3s;
+}
+
+.dash-card:hover {
+  transform: translateY(-4px);
+  border-color: cyan;
+}
+
+/* ===========================
+   INPUT
+=========================== */
+
+.dash-dashboard input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(0,0,0,.3);
+  color: white;
+}
+
+.dash-dashboard input:focus {
+  border-color: cyan;
+  outline: none;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.dash-button,
+.dash-dashboard button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg,#00c6ff,#0072ff);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dash-button:hover,
+.dash-dashboard button:hover {
+  opacity: 0.95;
+}
+
+/* ===========================
+   MAP
+=========================== */
+
+.dash-map-container {
+  border-radius: 16px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.dash-map-container .leaflet-container {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  z-index: 1;
+}
+
+/* ===========================
+   STATUS
+=========================== */
+
+.dash-safe {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.dash-caution {
+  color: #facc15;
+  font-weight: bold;
+}
+
+.dash-danger {
+  color: #ef4444;
+  font-weight: bold;
+}
+
+/* ===========================
+   MODAL
+=========================== */
+
+.dash-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.dash-modal-card {
+  width: 90%;
+  max-width: 700px;
+  background: #0f172a;
+  color: white;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.4);
+  animation: dash-popup .3s ease;
+}
+
+@keyframes dash-popup {
+  from {
+    transform: scale(.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ===========================
+   STATS
+=========================== */
+
+.dash-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.dash-stat-card {
+  background: rgba(255,255,255,.08);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+/* ===========================
+   ALERT
+=========================== */
+
+.dash-alert-banner {
+  background: #dc2626;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* ===========================
+   STATUS GRID
+=========================== */
+
+.dash-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 15px;
+  margin: 20px 0;
+}
+
+/* ===========================
+   SEARCH SUGGESTIONS
+=========================== */
+
+.dash-suggest-box {
+  background: #0f172a;
+  border-radius: 12px;
+  margin-top: 8px;
+  overflow: hidden;
+  padding: 6px;
+  animation: dash-fadeIn .25s ease;
+}
+
+.dash-suggest-item {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.dash-suggest-item:hover {
+  background: #1e293b;
+}
+
+@keyframes dash-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width:768px) {
+
+  .dash-dashboard {
+    padding: 10px;
+  }
+
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-header {
+    font-size: 18px;
+    margin-top: 500px;
+    width: 800px;
+    height: 600px;
+  }
+
+  .dash-dashboard button,
+  .dash-button {
+    width: 100%;
+  }
+}
+
+/* ===========================
+   MARINE STATUS CARD
+=========================== */
+
+.dash-marine-status{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  color: black !important;
+}
+
+.dash-status-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  padding:16px 18px;
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  border-radius:14px;
+
+  transition:.3s;
+}
+
+.dash-status-item:hover{
+  transform:translateY(-3px);
+  border-color:#38bdf8;
+  box-shadow:0 8px 20px rgba(0,198,255,.15);
+}
+
+.dash-label{
+  font-size:15px;
+  color:#cbd5e1;
+  font-weight:600;
+}
+
+.dash-value{
+  font-size:17px;
+  color:white;
+  font-weight:bold;
+}
+
+.dash-wave{
+  font-size:20px;
+  font-weight:bold;
+  color:#38bdf8;
+}
+
+.dash-status-badge{
+  padding:8px 18px;
+  border-radius:999px;
+  font-weight:bold;
+  font-size:14px;
+}
+
+/* SAFE */
+
+.dash-safe{
+  background:#14532d;
+  color:#4ade80;
+}
+
+/* CAUTION */
+
+.dash-caution{
+  background:#713f12;
+  color:#facc15;
+}
+
+/* DANGER */
+
+.dash-danger{
+  background:#7f1d1d;
+  color:#f87171;
+}

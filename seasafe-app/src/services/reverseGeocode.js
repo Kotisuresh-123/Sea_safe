@@ -1,60 +1,97 @@
 import { getNearestPlace } from "./nearestPlace";
 
+// 🌍 Main function
 export async function getLocationName(lat, lon) {
   try {
-    // 🌍 STEP 1: nearest land/port/coastal place (MOST IMPORTANT)
-    const place = await getNearestPlace(lat, lon);
-
-    // 🌍 STEP 2: reverse geocode (land fallback)
-    const res = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`
+    // STEP 1 - Reverse Geocoding
+    const reverseRes = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1&namedetails=1&accept-language=en`,
+      {
+        headers: {
+          "User-Agent": "SeaSafe Marine Intelligence",
+        },
+      }
     );
 
-    const data = await res.json();
-    const addr = data.address || {};
+    const reverse = await reverseRes.json();
+
+    const address = reverse.address || {};
 
     const landName =
-      addr.city ||
-      addr.town ||
-      addr.village ||
-      addr.suburb ||
-      addr.state_district ||
-      addr.county;
+      address.city ||
+      address.town ||
+      address.village ||
+      address.hamlet ||
+      address.suburb ||
+      address.neighbourhood ||
+      address.county ||
+      address.state_district;
 
-    // 🌊 CASE 1: nearest known place (BEST RESULT)
-    if (place?.name) {
-      return `${place.name} Coast 🌊`;
+    // ===========================
+    // 🌊 DECISION LOGIC STARTS HERE
+    // ===========================
+
+    // If clicked on sea/ocean/bay
+    if (
+      address.sea ||
+      address.ocean ||
+      reverse.type === "water"
+    ) {
+      // Search nearest coastal place
+      const nearest = await getNearestPlace(lat, lon);
+
+      if (nearest) {
+        // If coast is within 300 meters
+        if (nearest.distance <= 300) {
+          return `${nearest.name} Coast 🌊`;
+        }
+
+        // Between 300m and 5km
+        if (nearest.distance <= 5000) {
+          return `Near ${nearest.name} Coast 🌊`;
+        }
+      }
+
+      // No nearby coast → show sea/ocean
+      return (
+        address.sea ||
+        address.ocean ||
+        getOceanZone(lat, lon)
+      );
     }
 
-    // 🌍 CASE 2: land fallback
+    // ===========================
+    // LAND AREA
+    // ===========================
+
     if (landName) {
       return landName;
     }
 
-    // 🌊 CASE 3: ocean fallback
+    // Final fallback
     return getOceanZone(lat, lon);
   } catch (err) {
-    console.error("Location error:", err);
+    console.error(err);
     return getOceanZone(lat, lon);
   }
 }
 
-/* 🌊 OCEAN CLASSIFICATION ENGINE */
+/* ======================================================
+   OCEAN REGION CLASSIFIER
+====================================================== */
+
 function getOceanZone(lat, lon) {
-  // 🌊 Bay of Bengal
-  if (lat >= 5 && lat <= 22 && lon >= 80 && lon <= 100) {
+  // Bay of Bengal
+  if (lat >= 5 && lat <= 22 && lon >= 80 && lon <= 100)
     return "Bay of Bengal 🌊";
-  }
 
-  // 🌊 Arabian Sea
-  if (lat >= 5 && lat <= 25 && lon >= 55 && lon <= 75) {
+  // Arabian Sea
+  if (lat >= 5 && lat <= 25 && lon >= 55 && lon <= 75)
     return "Arabian Sea 🌊";
-  }
 
-  // 🌊 Indian Ocean
-  if (lat < 5 || lon < 50 || lon > 100) {
+  // Indian Ocean
+  if (lat < 5 || lon < 50 || lon > 100)
     return "Indian Ocean 🌊";
-  }
 
-  return `Open Sea (${lat.toFixed(2)}, ${lon.toFixed(2)}) 🌊`;
+  return `Open Sea (${lat.toFixed(3)}, ${lon.toFixed(3)}) 🌊`;
 }

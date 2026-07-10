@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bglight text-inktext font-body antialiased;
+  }
+
+  ::selection {
+    background: #4cc9f0;
+    color: #021526;
+  }
+
+  :focus-visible {
+    outline: 2px solid #00b4d8;
+    outline-offset: 3px;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/15;
+  }
+
+  .glass-light {
+    @apply bg-white/70 backdrop-blur-xl border border-white/60;
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary via-accent to-secondary;
+  }
+
+  .btn-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-ripple::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.55) 10%, transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.5s ease, opacity 0.7s ease;
+  }
+
+  .btn-ripple:active::after {
+    transform: scale(2.4);
+    opacity: 1;
+    transition: 0s;
+  }
+
+  /* Instrument-panel readout: the signature data typography used across
+     stat counters, dashboard cards, and floating hero chips. */
+  .readout-label {
+    @apply font-mono text-[10px] tracking-[0.22em] uppercase text-secondary/80;
+  }
+
+  .readout-value {
+    @apply font-mono font-semibold tabular-nums;
+  }
+
+  .wave-divider {
+    display: block;
+    width: 100%;
+    height: 60px;
+  }
+
+  .grid-fade {
+    background-image:
+      linear-gradient(to right, rgba(76, 201, 240, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(76, 201, 240, 0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 80%);
+  }
+
+  .shimmer-text {
+    background: linear-gradient(90deg, #4cc9f0 0%, #ffffff 50%, #4cc9f0 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 3.5s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
