@@ -57,7 +57,7 @@ export default function Dashboard() {
   const [distance, setDistance] = useState(null);
   const [weatherHistory, setWeatherHistory] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeTab, setActiveTab] = useState("map");
+  const [activeTab, setActiveTab] = useState("dashboard");
 
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -179,19 +179,31 @@ export default function Dashboard() {
         </div>
 
         <nav className="dash-nav">
-          <button className="dash-nav-item active">
+          <button
+            className={`dash-nav-item ${activeTab === "dashboard" ? "active" : ""}`}
+            onClick={() => { setActiveTab("dashboard"); document.getElementById("dash-section-top")?.scrollIntoView({ behavior: "smooth" }); }}
+          >
             <Home className="w-4 h-4" />
             <span>Dashboard</span>
           </button>
-          <button className="dash-nav-item" onClick={() => setActiveTab("map")}>
+          <button
+            className={`dash-nav-item ${activeTab === "map" ? "active" : ""}`}
+            onClick={() => { setActiveTab("map"); document.getElementById("dash-section-map")?.scrollIntoView({ behavior: "smooth" }); }}
+          >
             <MapPin className="w-4 h-4" />
             <span>Map View</span>
           </button>
-          <button className="dash-nav-item" onClick={() => setActiveTab("weather")}>
+          <button
+            className={`dash-nav-item ${activeTab === "weather" ? "active" : ""}`}
+            onClick={() => { setActiveTab("weather"); document.getElementById("dash-section-weather")?.scrollIntoView({ behavior: "smooth" }); }}
+          >
             <Waves className="w-4 h-4" />
             <span>Weather</span>
           </button>
-          <button className="dash-nav-item" onClick={() => setActiveTab("history")}>
+          <button
+            className={`dash-nav-item ${activeTab === "history" ? "active" : ""}`}
+            onClick={() => { setActiveTab("history"); document.getElementById("dash-section-history")?.scrollIntoView({ behavior: "smooth" }); }}
+          >
             <History className="w-4 h-4" />
             <span>History</span>
           </button>
@@ -245,6 +257,8 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
+
+        <div id="dash-section-top" />
 
         {/* STATS ROW */}
         <div className="dash-stats-row">
@@ -343,7 +357,7 @@ export default function Dashboard() {
         </div>
 
         {/* MAP */}
-        <div className="dash-map-wrapper">
+        <div id="dash-section-map" className="dash-map-wrapper">
           {loading && (
             <div className="dash-loading-overlay">
               <div className="dash-spinner" />
@@ -360,7 +374,7 @@ export default function Dashboard() {
         </div>
 
         {/* BOTTOM CARDS */}
-        <div className="dash-bottom-grid">
+        <div id="dash-section-weather" className="dash-bottom-grid">
           {/* LIVE STATUS */}
           {marineData && (
             <motion.div
@@ -403,6 +417,7 @@ export default function Dashboard() {
 
           {/* WEATHER HISTORY */}
           <motion.div
+            id="dash-section-history"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
