@@ -1,18 +1,70 @@
 import express from "express";
 import SOS from "../models/SOS.js";
-import { protect, adminOnly } from "../middleware/auth.js";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 const router = express.Router();
 
-router.post("/", protect, async (req, res) => {
+const optionalAuth = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.id);
+    } catch (err) {
+      req.user = null;
+    }
+  }
+  next();
+};
+
+const protect = async (req, res, next) => {
+  let token;
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    return res.status(401).json({ success: false, message: "Not authorized" });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id);
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: "User not found" });
+    }
+    next();
+  } catch (err) {
+    return res.status(401).json({ success: false, message: "Not authorized" });
+  }
+};
+
+const adminOnly = (req, res, next) => {
+  if (req.user && req.user.role === "admin") return next();
+  return res.status(403).json({ success: false, message: "Admin access required" });
+};
+
+router.post("/", optionalAuth, async (req, res) => {
   try {
     const { latitude, longitude, message } = req.body;
-    const sos = await SOS.create({
-      user: req.user._id,
+
+    if (!latitude || !longitude) {
+      return res.status(400).json({ success: false, message: "Location coordinates required" });
+    }
+
+    const sosData = {
       latitude,
       longitude,
-      message,
-    });
+      message: message || "SOS Emergency",
+    };
+
+    if (req.user) {
+      sosData.user = req.user._id;
+    }
+
+    const sos = await SOS.create(sosData);
 
     const populated = await SOS.findById(sos._id).populate("user", "name email phone");
 

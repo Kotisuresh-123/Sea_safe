@@ -747,3 +747,33 @@
     padding: 12px;
   }
 }
+
+/* ---- SOS PULSE ---- */
+.sos-pulse {
+  position: relative;
+}
+
+.sos-pulse::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.4);
+  animation: sos-ring 1.5s ease-out infinite;
+  z-index: -1;
+}
+
+.sos-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.2);
+  animation: sos-ring 1.5s ease-out infinite 0.5s;
+  z-index: -1;
+}
+
+@keyframes sos-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
