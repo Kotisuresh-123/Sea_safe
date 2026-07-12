@@ -1,52 +1,21 @@
-import {calculateDistance}
-from "../utils/distance";
+import { calculateDistance } from "../utils/distance";
 
+export async function searchMarine(query, userLocation) {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=10&addressdetails=1`
+  );
 
-export async function searchMarine(
-query,
-userLocation
-){
+  const results = await response.json();
 
+  if (!results.length) return [];
 
-const response=
-await fetch(
+  if (!userLocation || !userLocation.lat || !userLocation.lon) {
+    return results;
+  }
 
-`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=10`
-
-);
-
-
-const results=
-await response.json();
-
-
-
-return results.sort((a,b)=>{
-
-
-const da=
-calculateDistance(
-userLocation.lat,
-userLocation.lon,
-a.lat,
-a.lon
-);
-
-
-const db=
-calculateDistance(
-userLocation.lat,
-userLocation.lon,
-b.lat,
-b.lon
-);
-
-
-
-return da-db;
-
-
-});
-
-
+  return results.sort((a, b) => {
+    const da = calculateDistance(userLocation.lat, userLocation.lon, a.lat, a.lon);
+    const db = calculateDistance(userLocation.lat, userLocation.lon, b.lat, b.lon);
+    return da - db;
+  });
 }

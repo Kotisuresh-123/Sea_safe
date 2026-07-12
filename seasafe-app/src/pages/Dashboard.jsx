@@ -57,6 +57,8 @@ export default function Dashboard() {
   const [distance, setDistance] = useState(null);
   const [weatherHistory, setWeatherHistory] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState("");
   const [activeTab, setActiveTab] = useState("dashboard");
 
   const { user, logout } = useAuth();
@@ -112,25 +114,45 @@ export default function Dashboard() {
   const handleSearch = async () => {
     if (!query.trim()) return;
     const searchText = query.toLowerCase();
+    setSearchLoading(true);
+    setSearchError("");
+    setSuggestions([]);
 
-    if (searchText.includes("godavari") || searchText.includes("godavari river")) {
-      if (!userLocation) { alert("Waiting for GPS location..."); return; }
-      const river = rivers.godavari;
-      const nearest = findNearestRiver(userLocation.lat, userLocation.lon, river);
-      setPosition([nearest.lat, nearest.lon]);
-      setDistance(nearest.distance.toFixed(2));
-      setShape(river.polygon);
-      if (mapRef) mapRef.flyTo([nearest.lat, nearest.lon], 17, { duration: 2 });
-      await handleLocation(nearest.lat, nearest.lon);
-      setLocationName("Godavari River");
-      return;
+    try {
+      if (searchText.includes("godavari") || searchText.includes("godavari river")) {
+        if (!userLocation) {
+          setSearchError("Waiting for GPS location. Please allow location access.");
+          setSearchLoading(false);
+          return;
+        }
+        const river = rivers.godavari;
+        const nearest = findNearestRiver(userLocation.lat, userLocation.lon, river);
+        setPosition([nearest.lat, nearest.lon]);
+        setDistance(nearest.distance.toFixed(2));
+        setShape(river.polygon);
+        if (mapRef) mapRef.flyTo([nearest.lat, nearest.lon], 17, { duration: 2 });
+        await handleLocation(nearest.lat, nearest.lon);
+        setLocationName("Godavari River");
+        setSearchLoading(false);
+        return;
+      }
+
+      const results = await searchMarine(query, userLocation);
+      if (!results.length) {
+        setSearchError(`No results found for "${query}". Try a different search.`);
+        setSearchLoading(false);
+        return;
+      }
+
+      const best = results[0];
+      await handleLocation(parseFloat(best.lat), parseFloat(best.lon));
+      if (mapRef) mapRef.flyTo([parseFloat(best.lat), parseFloat(best.lon)], 17, { duration: 2 });
+    } catch (err) {
+      console.error(err);
+      setSearchError("Search failed. Please try again.");
+    } finally {
+      setSearchLoading(false);
     }
-
-    const results = await searchMarine(query, userLocation);
-    if (!results.length) return;
-    const best = results[0];
-    await handleLocation(best.lat, best.lon);
-    if (mapRef) mapRef.flyTo([best.lat, best.lon], 17, { duration: 2 });
   };
 
   useEffect(() => {
@@ -307,15 +329,29 @@ export default function Dashboard() {
             <Search className="w-5 h-5 text-white/40" />
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => { setQuery(e.target.value); setSearchError(""); }}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search ocean, river, port, city..."
               className="dash-search-input"
             />
-            <button onClick={handleSearch} className="dash-search-btn">
-              Search
+            <button
+              onClick={handleSearch}
+              disabled={searchLoading}
+              className="dash-search-btn"
+            >
+              {searchLoading ? "Searching..." : "Search"}
             </button>
           </div>
+
+          {searchError && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-2 px-4 py-2.5 rounded-xl bg-red-500/15 border border-red-500/25 text-red-300 text-sm"
+            >
+              {searchError}
+            </motion.div>
+          )}
 
           {suggestions.length > 0 && (
             <motion.div
@@ -344,8 +380,8 @@ export default function Dashboard() {
                       return;
                     }
                     setShape(null);
-                    await handleLocation(item.lat, item.lon);
-                    if (mapRef) mapRef.flyTo([item.lat, item.lon], 17, { duration: 2 });
+                    await handleLocation(parseFloat(item.lat), parseFloat(item.lon));
+                    if (mapRef) mapRef.flyTo([parseFloat(item.lat), parseFloat(item.lon)], 17, { duration: 2 });
                   }}
                 >
                   <MapPin className="w-4 h-4 text-accent shrink-0" />
