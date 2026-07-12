@@ -11,6 +11,11 @@
   font-family: 'Inter', sans-serif;
 }
 
+/* ---- SIDEBAR OVERLAY (mobile) ---- */
+.dash-sidebar-overlay {
+  display: none;
+}
+
 /* ---- SIDEBAR ---- */
 .dash-sidebar {
   width: 260px;
@@ -25,13 +30,13 @@
   height: 100vh;
   overflow-y: auto;
   z-index: 40;
+  flex-shrink: 0;
 }
 
 .dash-sidebar.closed {
   width: 0;
   overflow: hidden;
   border-right: none;
-  padding: 0;
 }
 
 .dash-sidebar-header {
@@ -50,11 +55,6 @@
   font-family: 'Space Grotesk', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: white;
-}
-
-.dash-logo-text span,
-.dash-logo-text {
   color: white;
 }
 
@@ -191,6 +191,7 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
 .dash-menu-btn {
@@ -204,6 +205,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .dash-menu-btn:hover {
@@ -216,6 +218,7 @@
   font-weight: 700;
   color: white;
   margin: 0;
+  white-space: nowrap;
 }
 
 .dash-topbar-subtitle {
@@ -225,12 +228,14 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 }
 
 .dash-topbar-right {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
 }
 
 .dash-clock {
@@ -240,6 +245,7 @@
   color: rgba(255, 255, 255, 0.7);
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
+  white-space: nowrap;
 }
 
 .dash-date {
@@ -249,6 +255,7 @@
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  white-space: nowrap;
 }
 
 /* ---- STATS ROW ---- */
@@ -268,6 +275,7 @@
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.3s;
+  min-width: 0;
 }
 
 .dash-stat-card-modern:hover {
@@ -293,6 +301,7 @@
   letter-spacing: 0.05em;
   font-weight: 600;
   margin: 0;
+  white-space: nowrap;
 }
 
 .dash-stat-value {
@@ -301,6 +310,9 @@
   font-weight: 700;
   color: white;
   margin: 2px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dash-stat-unit {
@@ -356,6 +368,7 @@
   cursor: pointer;
   transition: background 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .dash-banner-btn:hover {
@@ -386,6 +399,7 @@
 
 .dash-search-input {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -409,6 +423,7 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .dash-search-btn:hover {
@@ -505,6 +520,7 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 16px;
   padding: 20px;
+  min-width: 0;
 }
 
 .dash-card-header {
@@ -535,6 +551,7 @@
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .dash-card-action:hover {
@@ -558,6 +575,7 @@
   flex-direction: column;
   gap: 6px;
   transition: border-color 0.2s;
+  min-width: 0;
 }
 
 .dash-status-cell:hover {
@@ -577,6 +595,9 @@
   font-size: 14px;
   font-weight: 600;
   color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ---- RISK BADGES ---- */
@@ -588,6 +609,7 @@
   font-size: 13px;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
+  white-space: nowrap;
 }
 
 .dash-risk-safe {
@@ -616,6 +638,7 @@
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /* ---- HISTORY LIST ---- */
@@ -636,6 +659,8 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.04);
   transition: border-color 0.2s;
+  gap: 10px;
+  min-width: 0;
 }
 
 .dash-history-item:hover {
@@ -647,18 +672,23 @@
   color: white;
   font-weight: 500;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .dash-history-time {
   font-size: 11px;
   color: rgba(255, 255, 255, 0.35);
   margin: 2px 0 0;
+  white-space: nowrap;
 }
 
 .dash-history-right {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .dash-history-wave {
@@ -666,6 +696,7 @@
   font-size: 13px;
   font-weight: 600;
   color: #38bdf8;
+  white-space: nowrap;
 }
 
 .dash-empty-state {
@@ -695,7 +726,7 @@
   border-radius: 4px;
 }
 
-/* ---- MOBILE ---- */
+/* ---- TABLET (max-width: 1024px) ---- */
 @media (max-width: 1024px) {
   .dash-stats-row {
     grid-template-columns: repeat(3, 1fr);
@@ -705,46 +736,310 @@
   }
 }
 
+/* ---- MOBILE (max-width: 768px) ---- */
 @media (max-width: 768px) {
+  .dash-root {
+    position: relative;
+  }
+
+  .dash-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .dash-sidebar-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .dash-sidebar {
     position: fixed;
     left: 0;
     top: 0;
     z-index: 100;
+    box-shadow: 4px 0 30px rgba(0, 0, 0, 0.5);
   }
+
   .dash-sidebar.closed {
     width: 0;
+    box-shadow: none;
   }
-  .dash-stats-row {
-    grid-template-columns: repeat(2, 1fr);
-    padding: 16px;
-    gap: 10px;
-  }
+
   .dash-topbar {
     padding: 12px 16px;
   }
+
+  .dash-topbar-title {
+    font-size: 16px;
+  }
+
+  .dash-topbar-subtitle {
+    display: none;
+  }
+
+  .dash-clock {
+    font-size: 12px;
+  }
+
+  .dash-date {
+    display: none;
+  }
+
+  .dash-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 12px 16px 0;
+    gap: 8px;
+  }
+
+  .dash-stat-card-modern {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .dash-stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  .dash-stat-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .dash-stat-label {
+    font-size: 10px;
+  }
+
+  .dash-stat-value {
+    font-size: 14px;
+  }
+
+  .dash-danger-banner,
+  .dash-caution-banner {
+    margin: 10px 16px 0;
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .dash-banner-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+    width: 100%;
+    justify-content: center;
+  }
+
   .dash-search-container {
     padding: 12px 16px 0;
   }
-  .dash-map-wrapper {
-    margin: 12px 16px;
+
+  .dash-search-btn {
+    padding: 10px 16px;
+    font-size: 12px;
   }
+
+  .dash-suggestions {
+    left: 16px;
+    right: 16px;
+  }
+
+  .dash-map-wrapper {
+    margin: 10px 16px;
+  }
+
+  .dash-map-wrapper .leaflet-container {
+    height: 300px;
+  }
+
+  .dash-map-wrapper {
+    min-height: 300px;
+  }
+
   .dash-bottom-grid {
     padding: 0 16px 16px;
+    gap: 12px;
   }
-  .dash-danger-banner,
-  .dash-caution-banner {
-    margin: 12px 16px 0;
-    flex-wrap: wrap;
+
+  .dash-card-modern {
+    padding: 16px;
+  }
+
+  .dash-card-header h3 {
+    font-size: 14px;
+  }
+
+  .dash-status-grid-modern {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .dash-status-cell {
+    padding: 10px 12px;
+  }
+
+  .dash-status-value {
+    font-size: 12px;
+  }
+
+  .sos-pulse {
+    bottom: 20px !important;
+    right: 16px !important;
+    width: 56px !important;
+    height: 56px !important;
+  }
+
+  .sos-pulse svg,
+  .sos-pulse .w-8 {
+    width: 24px;
+    height: 24px;
   }
 }
 
+/* ---- SMALL MOBILE (max-width: 480px) ---- */
 @media (max-width: 480px) {
-  .dash-stats-row {
-    grid-template-columns: 1fr;
+  .dash-topbar {
+    padding: 10px 12px;
   }
+
+  .dash-topbar-title {
+    font-size: 14px;
+  }
+
+  .dash-topbar-left {
+    gap: 10px;
+  }
+
+  .dash-stats-row {
+    grid-template-columns: 1fr 1fr;
+    padding: 10px 12px 0;
+    gap: 6px;
+  }
+
   .dash-stat-card-modern {
-    padding: 12px;
+    padding: 10px;
+    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .dash-stat-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .dash-stat-label {
+    font-size: 9px;
+  }
+
+  .dash-stat-value {
+    font-size: 13px;
+  }
+
+  .dash-danger-banner,
+  .dash-caution-banner {
+    margin: 8px 12px 0;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
+
+  .dash-search-container {
+    padding: 10px 12px 0;
+  }
+
+  .dash-search-bar {
+    padding: 4px 6px 4px 12px;
+  }
+
+  .dash-search-input {
+    font-size: 13px;
+    padding: 6px 0;
+  }
+
+  .dash-search-btn {
+    padding: 8px 14px;
+    font-size: 11px;
+  }
+
+  .dash-map-wrapper {
+    margin: 8px 12px;
+    border-radius: 12px;
+  }
+
+  .dash-map-wrapper .leaflet-container {
+    height: 250px;
+    border-radius: 12px;
+  }
+
+  .dash-map-wrapper {
+    min-height: 250px;
+  }
+
+  .dash-bottom-grid {
+    padding: 0 12px 12px;
+    gap: 10px;
+  }
+
+  .dash-card-modern {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .dash-card-header {
+    margin-bottom: 12px;
+  }
+
+  .dash-card-header h3 {
+    font-size: 13px;
+  }
+
+  .dash-status-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .dash-status-cell {
+    padding: 10px;
+  }
+
+  .dash-history-item {
+    padding: 8px 10px;
+  }
+
+  .dash-history-name {
+    font-size: 12px;
+  }
+
+  .dash-history-wave {
+    font-size: 11px;
+  }
+
+  .dash-suggestions {
+    left: 12px;
+    right: 12px;
+    top: 50px;
+    border-radius: 10px;
+  }
+
+  .dash-suggestion-item {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .sos-pulse {
+    bottom: 16px !important;
+    right: 12px !important;
+    width: 50px !important;
+    height: 50px !important;
   }
 }
 
