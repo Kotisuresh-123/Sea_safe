@@ -10,6 +10,7 @@ import Comparison from "../components/Comparison/Comparison.jsx";
 import Testimonials from "../components/Testimonials/Testimonials.jsx";
 import CTA from "../components/CTA/CTA.jsx";
 import Footer from "../components/Footer/Footer.jsx";
+import SOSButton from "../components/SOS/SOSButton.jsx";
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
         <CTA />
       </main>
       <Footer />
+      <SOSButton />
     </div>
   );
 }
