@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import Navbar from "../components/Navbar/Navbar.jsx";
 import Hero from "../components/Hero/Hero.jsx";
 import TrustedBy from "../components/TrustedBy/TrustedBy.jsx";
@@ -13,46 +11,23 @@ import Testimonials from "../components/Testimonials/Testimonials.jsx";
 import CTA from "../components/CTA/CTA.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 
-// Import your dashboard component
-import Dashboard from "./Dashboard.jsx";
-
-
 export default function Home() {
-
-  const [showDashboard, setShowDashboard] = useState(false);
-
   return (
     <div className="overflow-x-hidden">
-
       <Navbar />
-
       <main>
-
-        {!showDashboard ? (
-          <>
-            <Hero />
-            <TrustedBy />
-
-            <Features 
-              setShowDashboard={setShowDashboard}
-            />
-
-            <HowItWorks />
-            <DashboardPreview />
-            <MapPreview />
-            <Statistics />
-            <Comparison />
-            <Testimonials />
-            <CTA />
-          </>
-        ) : (
-          <Dashboard />
-        )}
-
+        <Hero />
+        <TrustedBy />
+        <Features />
+        <HowItWorks />
+        <DashboardPreview />
+        <MapPreview />
+        <Statistics />
+        <Comparison />
+        <Testimonials />
+        <CTA />
       </main>
-
-      {!showDashboard && <Footer />}
-
+      <Footer />
     </div>
   );
 }

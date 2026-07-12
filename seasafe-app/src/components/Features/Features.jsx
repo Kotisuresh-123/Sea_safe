@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {
   Route,
   CloudRain,
@@ -53,7 +54,9 @@ const FEATURES = [
   },
 ];
 
-export default function Features({setShowDashboard}) {
+export default function Features() {
+  const navigate = useNavigate();
+
   return (
     <section id="features" className="py-24 bg-bglight relative">
       <div className="max-w-7xl mx-auto px-6">
@@ -72,14 +75,15 @@ export default function Features({setShowDashboard}) {
           {FEATURES.map(({ icon: Icon, title, desc }, i) => (
             <Reveal key={title} delay={(i % 4) * 0.08}>
               <div className="group relative h-full rounded-2xl p-[1px] bg-gradient-to-br from-slate-200 via-slate-200 to-slate-200 hover:from-secondary hover:via-accent hover:to-primary transition-all duration-500">
-<div
-  onClick={() => {
-    if (title === "GPS Navigation") {
-      setShowDashboard(true);
-    }
-  }}
-  className="h-full rounded-2xl bg-white p-6 transition-transform duration-300 group-hover:-translate-y-1.5 cursor-pointer"
->                  <span className="grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/20 mb-5 group-hover:scale-110 transition-transform">
+                <div
+                  onClick={() => {
+                    if (title === "GPS Navigation") {
+                      navigate("/login");
+                    }
+                  }}
+                  className="h-full rounded-2xl bg-white p-6 transition-transform duration-300 group-hover:-translate-y-1.5 cursor-pointer"
+                >
+                  <span className="grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/20 mb-5 group-hover:scale-110 transition-transform">
                     <Icon className="w-5 h-5 text-primary" strokeWidth={1.8} />
                   </span>
                   <h3 className="font-semibold text-inktext mb-2">{title}</h3>
