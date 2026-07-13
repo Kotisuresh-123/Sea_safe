@@ -1,10 +1,14 @@
 import express from "express";
 import User from "../models/User.js";
 import { protect } from "../middleware/auth.js";
+import { dbConnected } from "../config/db.js";
 
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected. Please check server configuration." });
+  }
   try {
     const { name, email, password, phone } = req.body;
 
@@ -27,6 +31,9 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected. Please check server configuration." });
+  }
   try {
     const { email, password } = req.body;
 
