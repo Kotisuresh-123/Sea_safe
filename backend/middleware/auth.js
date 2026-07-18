@@ -11,19 +11,36 @@ export const protect = async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
   }
 
+  console.log("Token:", token);
+
   if (!token) {
-    return res.status(401).json({ success: false, message: "Not authorized" });
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized",
+    });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded:", decoded);
+
     req.user = await User.findById(decoded.id);
+
     if (!req.user) {
-      return res.status(401).json({ success: false, message: "User not found" });
+      return res.status(401).json({
+        success: false,
+        message: "User not found",
+      });
     }
-    next();
+
+    return next();
   } catch (err) {
-    return res.status(401).json({ success: false, message: "Not authorized" });
+    console.log("JWT Error:", err.message);
+
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized",
+    });
   }
 };
 
@@ -31,5 +48,9 @@ export const adminOnly = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
     return next();
   }
-  return res.status(403).json({ success: false, message: "Admin access required" });
+
+  return res.status(403).json({
+    success: false,
+    message: "Admin access required",
+  });
 };

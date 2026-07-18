@@ -18,8 +18,10 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
+      // await login(email, password);
+      // navigate("/dashboard");
       await login(email, password);
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {

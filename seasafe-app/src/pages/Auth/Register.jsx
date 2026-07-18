@@ -20,8 +20,10 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
+      // await register(name, email, password, phone);
+      // navigate("/dashboard");
       await register(name, email, password, phone);
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {

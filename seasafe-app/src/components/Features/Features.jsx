@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 import {
   Route,
   CloudRain,
@@ -56,6 +57,7 @@ const FEATURES = [
 
 export default function Features() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <section id="features" className="py-24 bg-bglight relative">
@@ -76,11 +78,15 @@ export default function Features() {
             <Reveal key={title} delay={(i % 4) * 0.08}>
               <div className="group relative h-full rounded-2xl p-[1px] bg-gradient-to-br from-slate-200 via-slate-200 to-slate-200 hover:from-secondary hover:via-accent hover:to-primary transition-all duration-500">
                 <div
-                  onClick={() => {
-                    if (title === "GPS Navigation") {
-                      navigate("/login");
-                    }
-                  }}
+onClick={() => {
+  if (title === "GPS Navigation") {
+    if (user) {
+      navigate("/dashboard");
+    } else {
+      navigate("/login");
+    }
+  }
+}}
                   className="h-full rounded-2xl bg-white p-6 transition-transform duration-300 group-hover:-translate-y-1.5 cursor-pointer"
                 >
                   <span className="grid place-items-center w-11 h-11 rounded-xl bg-gradient-to-br from-primary/10 to-secondary/20 mb-5 group-hover:scale-110 transition-transform">
