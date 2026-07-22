@@ -1072,3 +1072,85 @@
   0% { transform: scale(0.8); opacity: 1; }
   100% { transform: scale(1.6); opacity: 0; }
 }
+
+/* ===== MOBILE SIDEBAR FIX ===== */
+@media (max-width: 768px) {
+
+  .dash-root {
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Sidebar becomes an overlay */
+  .dash-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  /* Show sidebar when open */
+  .dash-sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Hide sidebar when closed */
+  .dash-sidebar.closed {
+    transform: translateX(-100%);
+  }
+
+  /* Main content should take full width */
+  .dash-main {
+    width: 100%;
+    margin-left: 0 !important;
+  }
+
+  /* Keep top bar visible */
+  .dash-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+  }
+
+  /* Map should be visible and properly sized */
+  .dash-map-wrapper {
+    width: 100%;
+    min-height: 60vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Optional: make search bar stack nicely */
+  .dash-search-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .dash-search-btn {
+    width: 100%;
+  }
+}
+
+.dash-close-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .dash-close-btn {
+    display: block;
+  }
+
+  .dash-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
