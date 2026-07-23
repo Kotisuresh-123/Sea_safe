@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import { protect } from "../middleware/auth.js";
 import { dbConnected } from "../config/db.js";
 
+const ADMIN_EMAIL = "umakrishnakanthchokkapu15@gmail.com";
+
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
@@ -11,6 +13,10 @@ router.post("/register", async (req, res) => {
   }
   try {
     const { name, email, password, phone } = req.body;
+
+    if (email === ADMIN_EMAIL) {
+      return res.status(403).json({ success: false, message: "This email is reserved" });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
