@@ -1,10 +1,14 @@
 import express from "express";
 import WeatherHistory from "../models/WeatherHistory.js";
 import { protect } from "../middleware/auth.js";
+import { dbConnected } from "../config/db.js";
 
 const router = express.Router();
 
 router.post("/", protect, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const { latitude, longitude, locationName, waveHeight, waveDirection, wavePeriod, windSpeed, temperature, riskLevel } = req.body;
     const record = await WeatherHistory.create({
@@ -26,6 +30,9 @@ router.post("/", protect, async (req, res) => {
 });
 
 router.get("/", protect, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const { lat, lon, limit } = req.query;
     let query = {};

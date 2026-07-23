@@ -5,10 +5,14 @@ import SOS from "../models/SOS.js";
 import SavedLocation from "../models/SavedLocation.js";
 import WeatherHistory from "../models/WeatherHistory.js";
 import { protect, adminOnly } from "../middleware/auth.js";
+import { dbConnected } from "../config/db.js";
 
 const router = express.Router();
 
 router.get("/stats", protect, adminOnly, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const [users, alerts, activeSOS, locations, weatherRecords] = await Promise.all([
       User.countDocuments(),
@@ -36,6 +40,9 @@ router.get("/stats", protect, adminOnly, async (req, res) => {
 });
 
 router.get("/users", protect, adminOnly, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const users = await User.find().sort({ createdAt: -1 });
     res.json({ success: true, count: users.length, users });
@@ -45,6 +52,9 @@ router.get("/users", protect, adminOnly, async (req, res) => {
 });
 
 router.put("/users/:id/deactivate", protect, adminOnly, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id,

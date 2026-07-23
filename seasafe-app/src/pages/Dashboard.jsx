@@ -8,6 +8,7 @@ import { geoShapes } from "../services/geoShapes";
 import { getLocationName } from "../services/reverseGeocode";
 import { weatherAPI } from "../services/backend";
 import SOSButton from "../components/SOS/SOSButton";
+import SOSAlerts from "../components/SOS/SOSAlerts";
 import SavedLocations from "../components/SavedLocations/SavedLocations";
 import {
   Search, Waves, Wind, Thermometer, Shield, MapPin,
@@ -450,6 +451,9 @@ export default function Dashboard() {
               </div>
             </motion.div>
           )}
+
+          {/* SOS ALERTS */}
+          <SOSAlerts onNavigate={navigateToLocation} />
 
           {/* WEATHER HISTORY */}
           <motion.div

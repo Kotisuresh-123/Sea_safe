@@ -1,10 +1,14 @@
 import express from "express";
 import Alert from "../models/Alert.js";
 import { protect, adminOnly } from "../middleware/auth.js";
+import { dbConnected } from "../config/db.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const { lat, lon, radius } = req.query;
     let query = { isActive: true, expiresAt: { $gt: new Date() } };
@@ -23,6 +27,9 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", protect, adminOnly, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const { title, message, severity, latitude, longitude, radius } = req.body;
     const alert = await Alert.create({
@@ -41,6 +48,9 @@ router.post("/", protect, adminOnly, async (req, res) => {
 });
 
 router.delete("/:id", protect, adminOnly, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     await Alert.findByIdAndUpdate(req.params.id, { isActive: false });
     res.json({ success: true, message: "Alert deactivated" });

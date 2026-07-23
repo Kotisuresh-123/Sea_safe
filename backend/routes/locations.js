@@ -1,10 +1,14 @@
 import express from "express";
 import SavedLocation from "../models/SavedLocation.js";
 import { protect } from "../middleware/auth.js";
+import { dbConnected } from "../config/db.js";
 
 const router = express.Router();
 
 router.get("/", protect, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const locations = await SavedLocation.find({ user: req.user._id }).sort({
       createdAt: -1,
@@ -16,6 +20,9 @@ router.get("/", protect, async (req, res) => {
 });
 
 router.post("/", protect, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const { name, latitude, longitude, description, category } = req.body;
     const location = await SavedLocation.create({
@@ -33,6 +40,9 @@ router.post("/", protect, async (req, res) => {
 });
 
 router.delete("/:id", protect, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const location = await SavedLocation.findOneAndDelete({
       _id: req.params.id,

@@ -2,6 +2,7 @@ import express from "express";
 import SOS from "../models/SOS.js";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import { dbConnected } from "../config/db.js";
 
 const router = express.Router();
 
@@ -47,6 +48,9 @@ const adminOnly = (req, res, next) => {
 };
 
 router.post("/", optionalAuth, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const { latitude, longitude, message } = req.body;
 
@@ -79,6 +83,9 @@ router.post("/", optionalAuth, async (req, res) => {
 });
 
 router.get("/", protect, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const sosList = await SOS.find()
       .populate("user", "name email phone")
@@ -89,7 +96,10 @@ router.get("/", protect, async (req, res) => {
   }
 });
 
-router.get("/active", protect, async (req, res) => {
+router.get("/active", optionalAuth, async (req, res) => {
+  if (!dbConnected) {
+    return res.status(503).json({ success: false, message: "Database not connected" });
+  }
   try {
     const active = await SOS.find({ status: "active" })
       .populate("user", "name email phone")
@@ -120,6 +130,11 @@ router.put("/:id/resolve", protect, adminOnly, async (req, res) => {
       { status: "resolved", resolvedAt: new Date() },
       { new: true }
     ).populate("user", "name email phone");
+
+    if (req.app.get("io")) {
+      req.app.get("io").emit("sos-resolved", sos);
+    }
+
     res.json({ success: true, sos });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
