@@ -6,22 +6,30 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const token = localStorage.getItem("seasafe_token");
+  console.log("Stored token:", token);
 
-  useEffect(() => {
-    const token = localStorage.getItem("seasafe_token");
-    if (token) {
-      authAPI
-        .getMe()
-        .then((data) => setUser(data.user))
-        .catch(() => {
-          localStorage.removeItem("seasafe_token");
-          setUser(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, []);
+  if (token) {
+    console.log("Calling /auth/me...");
+
+    authAPI
+      .getMe()
+      .then((data) => {
+        console.log("User restored:", data);
+        setUser(data.user);
+      })
+      .catch((err) => {
+        console.log("getMe failed:", err);
+        localStorage.removeItem("seasafe_token");
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  } else {
+    console.log("No token found");
+    setLoading(false);
+  }
+}, []);
 
   const login = async (email, password) => {
     const data = await authAPI.login({ email, password });

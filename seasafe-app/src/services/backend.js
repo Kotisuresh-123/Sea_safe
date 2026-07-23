@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:5000/api";
-
+const API_URL = import.meta.env.VITE_API_URL;
+console.log("API_URL =", import.meta.env.VITE_API_URL);
 async function request(path, options = {}) {
   const token = localStorage.getItem("seasafe_token");
   const headers = { "Content-Type": "application/json", ...options.headers };

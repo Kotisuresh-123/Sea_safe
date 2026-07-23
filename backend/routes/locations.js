@@ -10,12 +10,30 @@ router.get("/", protect, async (req, res) => {
     return res.status(503).json({ success: false, message: "Database not connected" });
   }
   try {
-    const locations = await SavedLocation.find({ user: req.user._id }).sort({
+    console.log("GET /locations called");
+
+    const locations = await SavedLocation.find({
+      user: req.user._id,
+    }).sort({
       createdAt: -1,
     });
-    res.json({ success: true, count: locations.length, locations });
+
+    console.log("Sending response");
+
+    return res.json({
+      success: true,
+      count: locations.length,
+      locations,
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error("Locations error:", err);
+
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
   }
 });
 

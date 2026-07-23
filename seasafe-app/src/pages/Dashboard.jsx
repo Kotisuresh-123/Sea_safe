@@ -195,38 +195,81 @@ export default function Dashboard() {
       {/* SIDEBAR */}
       <aside className={`dash-sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="dash-sidebar-header">
-          <div className="dash-logo">
-            <Compass className="w-6 h-6" />
-            <span className="dash-logo-text">SeaSafe</span>
-          </div>
-        </div>
+  <div className="dash-logo">
+    <Compass className="w-6 h-6" />
+    <span className="dash-logo-text">SeaSafe</span>
+  </div>
+
+  {/* Close button for mobile */}
+  <button
+    className="dash-close-btn"
+    onClick={() => setSidebarOpen(false)}
+  >
+    <X className="w-5 h-5" />
+  </button>
+</div>
 
         <nav className="dash-nav">
           <button
             className={`dash-nav-item ${activeTab === "dashboard" ? "active" : ""}`}
-            onClick={() => { setActiveTab("dashboard"); document.getElementById("dash-section-top")?.scrollIntoView({ behavior: "smooth" }); }}
+           onClick={() => {
+  setActiveTab("dashboard");
+  document.getElementById("dash-section-top")?.scrollIntoView({
+    behavior: "smooth",
+  });
+
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768) {
+    setSidebarOpen(false);
+  }
+}}
           >
             <Home className="w-4 h-4" />
             <span>Dashboard</span>
           </button>
           <button
             className={`dash-nav-item ${activeTab === "map" ? "active" : ""}`}
-            onClick={() => { setActiveTab("map"); document.getElementById("dash-section-map")?.scrollIntoView({ behavior: "smooth" }); }}
-          >
+                 onClick={() => {
+  setActiveTab("map");
+  document.getElementById("dash-section-map")?.scrollIntoView({
+    behavior: "smooth",
+  });
+
+  if (window.innerWidth <= 768) {
+    setSidebarOpen(false);
+  }
+}}>
             <MapPin className="w-4 h-4" />
             <span>Map View</span>
           </button>
           <button
             className={`dash-nav-item ${activeTab === "weather" ? "active" : ""}`}
-            onClick={() => { setActiveTab("weather"); document.getElementById("dash-section-weather")?.scrollIntoView({ behavior: "smooth" }); }}
+           onClick={() => {
+  setActiveTab("weather");
+  document.getElementById("dash-section-weather")?.scrollIntoView({
+    behavior: "smooth",
+  });
+
+  if (window.innerWidth <= 768) {
+    setSidebarOpen(false);
+  }
+}}
           >
             <Waves className="w-4 h-4" />
             <span>Weather</span>
           </button>
           <button
             className={`dash-nav-item ${activeTab === "history" ? "active" : ""}`}
-            onClick={() => { setActiveTab("history"); document.getElementById("dash-section-history")?.scrollIntoView({ behavior: "smooth" }); }}
-          >
+                  onClick={() => {
+  setActiveTab("history");
+  document.getElementById("dash-section-history")?.scrollIntoView({
+    behavior: "smooth",
+  });
+
+  if (window.innerWidth <= 768) {
+    setSidebarOpen(false);
+  }
+}}>
             <History className="w-4 h-4" />
             <span>History</span>
           </button>
